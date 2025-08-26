@@ -1,0 +1,238 @@
+LAMMPS (7 Feb 2024 - Update 1)
+  using 1 OpenMP thread(s) per MPI task
+# GCMC: 90.0% H₂ / 10.0% CH₄ at 50 bar, 298 K
+units real
+atom_style full
+boundary p p p
+
+read_data "structure.data"
+Reading data file ...
+  orthogonal box = (0 0 0) to (13.3634 13.3634 30.7634)
+  1 by 2 by 4 MPI processor grid
+  reading atoms ...
+  400 atoms
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     0 = max # of 1-2 neighbors
+     0 = max # of 1-3 neighbors
+     0 = max # of 1-4 neighbors
+     1 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+  read_data CPU = 0.007 seconds
+
+timestep 1.0
+
+pair_style lj/cut/coul/long 12.0
+kspace_style pppm 1e-5
+pair_coeff 1 1 0.104924 3.431000  # C
+pair_coeff 2 2 0.043997 2.571000  # H
+pair_coeff 3 3 0.068956 3.261000  # N
+pair_coeff 4 4 0.060014 3.118000  # O
+pair_coeff 5 5 0.313541 3.595000  # S
+pair_coeff 6 6 0.123962 2.462000  # Zn
+
+# Gas parameters
+pair_coeff 7 7 0.072930 2.958000
+pair_coeff 8 8 0.294106 3.730000
+
+pair_modify mix geometric tail yes
+
+# Groups
+group framework type 1:6
+400 atoms in group framework
+group h2 type 7
+0 atoms in group h2
+group ch4 type 8
+0 atoms in group ch4
+group gases type 7 8
+0 atoms in group gases
+
+# Freeze framework
+fix freeze framework setforce 0.0 0.0 0.0
+
+# Counting
+compute type_counts all count/type atom
+variable n_h2 equal c_type_counts[7]
+variable n_ch4 equal c_type_counts[8]
+
+# Temperature monitoring
+compute temp_gases gases temp
+compute_modify temp_gases dynamic yes
+
+# Chemical potentials
+variable mu_h2 equal 2.262132
+variable mu_ch4 equal 0.946536
+
+# Initialize framework at target temperature
+velocity framework create 298 98765 dist gaussian
+velocity framework scale 298
+
+# GCMC
+fix gcmc_h2 gases gcmc 1000 5 0 7 54321 298 ${mu_h2} 0.2
+fix gcmc_h2 gases gcmc 1000 5 0 7 54321 298 2.262132 0.2
+fix gcmc_ch4 gases gcmc 1000 5 0 8 12345 298 ${mu_ch4} 0.2
+fix gcmc_ch4 gases gcmc 1000 5 0 8 12345 298 0.946536 0.2
+
+print "[INFO] Equilibration Phase"
+[INFO] Equilibration Phase
+thermo_style custom step temp pe ke v_n_h2 v_n_ch4 vol
+thermo 5000
+run 100000
+WARNING: No fixes with time integration, atoms won't move (src/verlet.cpp:60)
+PPPM initialization ...
+WARNING: System is not charge neutral, net charge = 2e-05 (src/kspace.cpp:327)
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:342)
+  G vector (1/distance) = 0.23753849
+  grid = 8 8 15
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.001408426
+  estimated relative force accuracy = 4.241433e-06
+  using double precision FFTW3
+  3d grid and FFT values/proc = 1650 128
+Generated 28 of 28 mixed pair_coeff terms from geometric mixing rule
+WARNING: Fix gcmc using full_energy option (src/MC/fix_gcmc.cpp:539)
+0 atoms in group FixGCMC:gcmc_exclusion_group:gcmc_h2
+WARNING: Fix gcmc using full_energy option (src/MC/fix_gcmc.cpp:539)
+0 atoms in group FixGCMC:gcmc_exclusion_group:gcmc_ch4
+WARNING: Neighbor exclusions used with KSpace solver may give inconsistent Coulombic energies (src/neighbor.cpp:651)
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 2 2 5
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 6.532 | 6.54 | 6.545 Mbytes
+   Step          Temp          PotEng         KinEng         v_n_h2        v_n_ch4         Volume    
+         0   298            2.8610842e+09  354.42428      0              0              5493.7421    
+      5000   300.04264      2.8610842e+09  356.85367      2              1              5493.7421    
+     10000   300.93848      2.8610842e+09  357.91913      4              1              5493.7421    
+     15000   303.859        2.8610842e+09  361.39264      8              2              5493.7421    
+     20000   304.88873      2.8610842e+09  362.61734      8              3              5493.7421    
+     25000   305.14079      2.8610842e+09  362.91713      8              4              5493.7421    
+     30000   306.63304      2.8610842e+09  364.69192      9              3              5493.7421    
+     35000   307.30828      2.8610842e+09  365.49501      10             3              5493.7421    
+     40000   309.71243      2.8610842e+09  368.35437      12             4              5493.7421    
+     45000   307.76023      2.8610842e+09  366.03254      12             5              5493.7421    
+     50000   310.05735      2.8610842e+09  368.7646       13             6              5493.7421    
+     55000   310.60218      2.8610842e+09  369.41259      14             6              5493.7421    
+     60000   310.74002      2.8610842e+09  369.57654      15             6              5493.7421    
+     65000   311.44113      2.8610842e+09  370.41039      17             6              5493.7421    
+     70000   312.3386       2.8610842e+09  371.47779      17             7              5493.7421    
+     75000   311.83461      2.8610842e+09  370.87837      16             7              5493.7421    
+     80000   311.2792       2.8610842e+09  370.2178       15             7              5493.7421    
+     85000   311.46456      2.8610842e+09  370.43826      16             7              5493.7421    
+     90000   314.52771      2.8610842e+09  374.0814       19             7              5493.7421    
+     95000   316.22752      2.8610842e+09  376.10305      21             7              5493.7421    
+    100000   316.22752      2.8610842e+09  376.10305      21             7              5493.7421    
+Loop time of 54.0493 on 8 procs for 100000 steps with 428 atoms
+
+Performance: 159.854 ns/day, 0.150 hours/ns, 1850.163 timesteps/s, 791.870 katom-step/s
+90.8% CPU use with 8 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 20.212     | 24.587     | 28.442     |  60.8 | 45.49
+Bond    | 0.0038346  | 0.0046033  | 0.0051969  |   0.7 |  0.01
+Kspace  | 10.2       | 13.944     | 18.447     |  77.1 | 25.80
+Neigh   | 0.080177   | 0.086805   | 0.090849   |   1.3 |  0.16
+Comm    | 11.037     | 11.366     | 11.788     |   6.2 | 21.03
+Output  | 0.00056355 | 0.000655   | 0.00087952 |   0.0 |  0.00
+Modify  | 2.4455     | 2.447      | 2.4496     |   0.1 |  4.53
+Other   |            | 1.614      |            |       |  2.99
+
+Nlocal:           53.5 ave          56 max          52 min
+Histogram: 1 0 5 0 0 0 0 1 0 1
+Nghost:        3839.88 ave        3866 max        3816 min
+Histogram: 1 1 1 1 0 1 0 1 1 1
+Neighs:        23922.2 ave       27213 max       20385 min
+Histogram: 1 1 1 0 1 1 0 1 0 2
+
+Total # of neighbors = 191378
+Ave neighs/atom = 447.14486
+Ave special neighs/atom = 0
+Neighbor list builds = 1289
+Dangerous builds = 0
+
+print "[INFO] Production Phase"
+[INFO] Production Phase
+run 100000
+WARNING: No fixes with time integration, atoms won't move (src/verlet.cpp:60)
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:342)
+  G vector (1/distance) = 0.23753593
+  grid = 8 8 15
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.0013616451
+  estimated relative force accuracy = 4.1005537e-06
+  using double precision FFTW3
+  3d grid and FFT values/proc = 1650 128
+Generated 28 of 28 mixed pair_coeff terms from geometric mixing rule
+WARNING: Neighbor exclusions used with KSpace solver may give inconsistent Coulombic energies (src/neighbor.cpp:651)
+Per MPI rank memory allocation (min/avg/max) = 6.661 | 6.669 | 6.673 Mbytes
+   Step          Temp          PotEng         KinEng         v_n_h2        v_n_ch4         Volume    
+    100000   295.49129      2.8610842e+09  376.10305      21             7              5493.7421    
+    105000   296.0409       2.8610842e+09  376.8026       22             7              5493.7421    
+    110000   296.61637      2.8610842e+09  377.53506      22             8              5493.7421    
+    115000   296.61637      2.8610842e+09  377.53506      22             8              5493.7421    
+    120000   294.86639      2.8610842e+09  375.30768      21             8              5493.7421    
+    125000   294.86639      2.8610842e+09  375.30768      21             8              5493.7421    
+    130000   295.50209      2.8610842e+09  376.1168       21             9              5493.7421    
+    135000   296.37501      2.8610842e+09  377.22786      22             9              5493.7421    
+    140000   296.37501      2.8610842e+09  377.22786      22             9              5493.7421    
+    145000   297.99784      2.8610842e+09  379.29341      23             9              5493.7421    
+    150000   297.99784      2.8610842e+09  379.29341      23             9              5493.7421    
+    155000   298.41865      2.8610842e+09  379.82902      24             9              5493.7421    
+    160000   298.41865      2.8610842e+09  379.82902      24             9              5493.7421    
+    165000   299.24047      2.8610842e+09  380.87503      26             9              5493.7421    
+    170000   298.60477      2.8610842e+09  380.06591      26             8              5493.7421    
+    175000   298.77899      2.8610842e+09  380.28766      27             8              5493.7421    
+    180000   299.00007      2.8610842e+09  380.56906      28             8              5493.7421    
+    185000   299.00007      2.8610842e+09  380.56906      28             8              5493.7421    
+    190000   299.00007      2.8610842e+09  380.56906      28             8              5493.7421    
+    195000   299.00007      2.8610842e+09  380.56906      28             8              5493.7421    
+    200000   299.00007      2.8610842e+09  380.56906      28             8              5493.7421    
+Loop time of 58.0247 on 8 procs for 100000 steps with 436 atoms
+
+Performance: 148.902 ns/day, 0.161 hours/ns, 1723.404 timesteps/s, 751.404 katom-step/s
+90.2% CPU use with 8 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 22.374     | 26.866     | 31.508     |  63.3 | 46.30
+Bond    | 0.0037518  | 0.0044953  | 0.0050802  |   0.7 |  0.01
+Kspace  | 9.8752     | 14.182     | 18.417     |  82.8 | 24.44
+Neigh   | 0.087429   | 0.093842   | 0.098574   |   1.3 |  0.16
+Comm    | 12.021     | 12.53      | 12.913     |   7.5 | 21.59
+Output  | 0.00057334 | 0.00063364 | 0.00086738 |   0.0 |  0.00
+Modify  | 2.5811     | 2.5825     | 2.5854     |   0.1 |  4.45
+Other   |            | 1.766      |            |       |  3.04
+
+Nlocal:           54.5 ave          56 max          53 min
+Histogram: 2 0 0 1 0 0 4 0 0 1
+Nghost:        3910.12 ave        3927 max        3895 min
+Histogram: 1 1 1 0 2 1 0 0 0 2
+Neighs:        24828.2 ave       28468 max       20873 min
+Histogram: 2 0 0 1 1 0 1 1 1 1
+
+Total # of neighbors = 198626
+Ave neighs/atom = 455.56422
+Ave special neighs/atom = 0
+Neighbor list builds = 1300
+Dangerous builds = 0
+
+print "[INFO] Final H2: ${n_h2}"
+[INFO] Final H2: 28
+print "[INFO] Final CH4: ${n_ch4}"
+[INFO] Final CH4: 8
+print "[INFO] Completed"
+[INFO] Completed
+Total wall time: 0:01:52
