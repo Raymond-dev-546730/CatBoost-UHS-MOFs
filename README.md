@@ -1,4 +1,4 @@
-# Physics-Informed ML for H₂/CH₄ Selectivity in MOFs (UHS Conditions)
+# Physics-informed ML for H₂/CH₄ Selectivity in MOFs (UHS Conditions)
 
 This repository provides datasets and trained model weights associated with the study:
 
