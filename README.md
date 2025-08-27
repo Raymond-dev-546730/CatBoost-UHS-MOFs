@@ -4,8 +4,6 @@ This repository provides datasets and trained model weights associated with the 
 
 > **“Physics-informed Machine Learning for Enhanced H₂/CH₄ Selectivity Prediction in Metal-Organic Frameworks Under Underground Hydrogen Storage Conditions”** 
 
----
-
 ## Repository Contents
 
 ~~~
@@ -20,4 +18,3 @@ Data/
 ExtraTrees/                    # Pre-trained Extra Trees model weights
 ~~~
 
----
