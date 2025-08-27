@@ -2,7 +2,7 @@
 
 This repository provides datasets and trained model weights associated with the study:
 
-**“Physics-informed Machine Learning for Enhanced H₂/CH₄ Selectivity Prediction in Metal-Organic Frameworks Under Underground Hydrogen Storage Conditions”**  
+> **“Physics-informed Machine Learning for Enhanced H₂/CH₄ Selectivity Prediction in Metal-Organic Frameworks Under Underground Hydrogen Storage Conditions”** 
 
 ---
 
