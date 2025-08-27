@@ -9,12 +9,15 @@ This repository provides datasets and trained model weights associated with the 
 ~~~
 Data/
 ├── Processed/                 
-│   ├── Datasets/              # Final tabular datasets (raw + cleaned)
-│   ├── GCMC_Simulation_Logs/  # Grand Canonical Monte Carlo outputs
-│   └── LAMMPS_Structures/     # Processed MOF structures for simulations
+│   ├── Datasets/              
+│   │   ├── MOF_UHS_Dataset.csv        # Full dataset
+│   │   └── MOF_UHS_Dataset_Clean.csv  # Cleaned dataset used for ML
+│   ├── GCMC_Simulation_Logs/          # Grand Canonical Monte Carlo outputs
+│   └── LAMMPS_Structures/             # Processed MOF structures for simulations
 └── Unprocessed/
-    └── CIF_Files/             # Raw MOF structure files (.cif)
+    └── CIF_Files/                     # Raw MOF structure files (.cif)
 
-ExtraTrees/                    # Pre-trained Extra Trees model weights
+ExtraTrees/                            # Pre-trained Extra Trees model weights
 ~~~
+
 
