@@ -1,8 +1,8 @@
-# Physics-informed ML for H₂/CH₄ Selectivity in MOFs (UHS Conditions)
+# Machine Learning for H₂/CH₄ Selectivity in MOFs (UHS Conditions)
 
 This repository provides datasets and trained model weights associated with the study:
 
-> **“Physics-informed Machine Learning for Enhanced H₂/CH₄ Selectivity Prediction in Metal-Organic Frameworks Under Underground Hydrogen Storage Conditions”** 
+> **“Machine Learning-Derived Stage-Specific Design Rules for Metal-Organic Framework Selection in Seasonal Hydrogen Storage”** 
 
 ## Repository Contents
 
@@ -17,7 +17,7 @@ Data/
 └── Unprocessed/
     └── CIF_Files/                     # Raw MOF structure files (.cif)
 
-ExtraTrees/                            # Pre-trained Extra Trees model weights
+CatBoost/                            # Pre-trained CatBoost model weights
 ~~~
 
 
