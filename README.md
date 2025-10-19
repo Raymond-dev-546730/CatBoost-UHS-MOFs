@@ -1,11 +1,14 @@
-# Machine Learning for H₂/CH₄ Selectivity in MOFs (UHS Conditions)
+# Machine Learning for Hydrogen Storage in Metal-Organic Frameworks
 
-This repository provides datasets and trained model weights associated with the study:
+This repository contains the dataset and a trained machine learning model from:
 
-> **“Machine Learning-Derived Stage-Specific Design Rules for Metal-Organic Framework Selection in Seasonal Hydrogen Storage”** 
+> **"Machine Learning-Derived Stage-Specific Design Rules for Metal-Organic Framework Selection in Seasonal Hydrogen Storage"**  
+
+## Overview
+
+We apply machine learning (ML) to predict H₂ and CH₄ adsorption, as well as H₂/CH₄ selectivity in metal-organic frameworks (MOFs) under underground hydrogen storage (UHS) conditions. This repository provides the dataset and the best-performing model (CatBoost) to accelerate the discovery and optimization of MOFs for clean energy storage applications.
 
 ## Repository Contents
-
 ~~~
 Data/
 ├── Processed/                 
@@ -17,7 +20,6 @@ Data/
 └── Unprocessed/
     └── CIF_Files/                     # Raw MOF structure files (.cif)
 
-CatBoost/                            # Pre-trained CatBoost model weights
+Models/
+└── CatBoost/                          # Pre-trained CatBoost model weights
 ~~~
-
-
