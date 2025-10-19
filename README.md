@@ -6,7 +6,7 @@ This repository contains datasets, molecular simulation outputs, MOF structures,
 
 ## Overview
 
-We apply machine learning (ML) to predict H₂ and CH₄ adsorption, as well as H₂/CH₄ selectivity in metal-organic frameworks (MOFs) under underground hydrogen storage (UHS) conditions to derive stage-specific design rules. This repository provides the dataset and the best-performing model (CatBoost) to accelerate the discovery and optimization of MOFs for clean energy storage applications.
+We apply machine learning (ML) to predict H₂ and CH₄ adsorption, as well as H₂/CH₄ selectivity in metal-organic frameworks (MOFs) under underground hydrogen storage (UHS) conditions simulating seasonal storage cycles to derive stage-specific design rules. This repository provides the dataset and the best-performing model (CatBoost) to accelerate the discovery and optimization of MOFs for clean energy storage applications.
 
 ## Repository Contents
 ~~~
